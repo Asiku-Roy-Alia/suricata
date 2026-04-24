@@ -1,0 +1,87 @@
+# =============================================================================
+# Hybrid IDS Configuration
+# All tunable parameters live here. The scripts read this file and should
+# not need editing for normal use.
+# =============================================================================
+
+# Directories (relative to project root)
+paths:
+  raw_data_dir: "data/raw"
+  processed_data_dir: "data/processed"
+  artifacts_dir: "artifacts"
+  results_dir: "results"
+  plots_dir: "results/plots"
+  loaco_dir: "results/loaco"
+  logs_dir: "results/logs"
+
+# Reproducibility
+seed: 42
+
+# Data preparation
+data:
+  # CIC-IDS-2017 ships as eight CSVs. The loader will pick up every CSV it
+  # finds inside raw_data_dir recursively and concatenate them.
+  file_glob: "**/*.csv"
+  # The original dataset has roughly 2.8M rows. We take a stratified sample
+  # to keep SVM training tractable on commodity hardware.
+  stratified_sample_fraction: 0.20
+  # Drop rows where the entire row is duplicated. This is a known issue with
+  # the published CIC-IDS-2017 files.
+  drop_duplicates: true
+
+# Preprocessing
+preprocessing:
+  test_size: 0.20
+  validation_size: 0.10  # taken from training portion for calibration
+  # Recursive Feature Elimination. We use a fast linear estimator internally
+  # to avoid the O(n^3) cost of a full SVM during feature ranking.
+  rfe_n_features: 30
+  # PCA applied after RFE. Retains enough components to preserve 95% variance.
+  pca_variance_retained: 0.95
+
+# Models
+models:
+  # Supervised component. LinearSVC is orders of magnitude faster than SVC with
+  # a linear kernel, which is essential on hundreds of thousands of rows.
+  supervised:
+    C_grid: [0.1, 1.0, 10.0]
+    class_weight: "balanced"
+    max_iter: 3000
+  # Unsupervised component. SGDOneClassSVM is the stochastic variant introduced
+  # in scikit-learn 1.0. It converges in minutes where OneClassSVM would take
+  # hours on the same data.
+  anomaly:
+    nu_grid: [0.05, 0.10, 0.20]
+    # How many benign rows to train the anomaly detector on. SGDOneClassSVM
+    # does not require the full corpus to fit a good boundary.
+    max_benign_rows: 80000
+  # Meta-learner on top of the stack.
+  meta_learner:
+    C_grid: [0.1, 1.0, 10.0]
+    max_iter: 1000
+  # Baseline for comparison.
+  isolation_forest:
+    n_estimators: 200
+    contamination: "auto"
+
+# Evaluation
+evaluation:
+  cv_folds: 5
+  # Metrics reported. Accuracy is included for completeness but macro F1 and
+  # MCC are the headline metrics on this class-imbalanced benchmark.
+  primary_metric: "macro_f1"
+  report_reliability: true
+
+# Leave-One-Attack-Category-Out protocol. Each category is withheld from
+# training in turn, and we measure the model's ability to detect it.
+loaco:
+  enabled: true
+  # Categories match the normalised labels produced by data.py.
+  attack_categories:
+    - "DoS"
+    - "DDoS"
+    - "PortScan"
+    - "Brute Force"
+    - "Web Attack"
+    - "Infiltration"
+    - "Bot"
