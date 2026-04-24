@@ -1,0 +1,33 @@
+2026-04-24 17:48:28 | INFO    | 03_train_models | Loading splits: D:\Work\Geria_projects\IDS\implementation\code\data\processed\splits.npz
+2026-04-24 17:48:29 | INFO    | 03_train_models | ======================================================================
+2026-04-24 17:48:29 | INFO    | 03_train_models | BASELINE 1: Linear SVC
+2026-04-24 17:48:29 | INFO    | 03_train_models | ======================================================================
+2026-04-24 17:48:29 | INFO    | 03_train_models | Fitting Linear SVC baseline
+2026-04-24 17:48:32 | INFO    | 03_train_models | Saved linear_svc.joblib
+2026-04-24 17:48:32 | INFO    | 03_train_models | ======================================================================
+2026-04-24 17:48:32 | INFO    | 03_train_models | BASELINE 2: Isolation Forest
+2026-04-24 17:48:32 | INFO    | 03_train_models | ======================================================================
+2026-04-24 17:48:32 | INFO    | 03_train_models | Fitting Isolation Forest baseline on benign rows only
+2026-04-24 17:48:33 | INFO    | 03_train_models | Saved isolation_forest.joblib
+2026-04-24 17:48:33 | INFO    | 03_train_models | ======================================================================
+2026-04-24 17:48:33 | INFO    | 03_train_models | HYBRID STACKED MODEL
+2026-04-24 17:48:33 | INFO    | 03_train_models | ======================================================================
+2026-04-24 17:48:33 | INFO    | 03_train_models | Training supervised component
+2026-04-24 17:48:41 | INFO    | 03_train_models |   supervised C=0.10 -> macro F1 0.9019
+2026-04-24 17:48:49 | INFO    | 03_train_models |   supervised C=1.00 -> macro F1 0.9025
+2026-04-24 17:48:57 | INFO    | 03_train_models |   supervised C=10.00 -> macro F1 0.9026
+2026-04-24 17:48:57 | INFO    | 03_train_models | Best supervised C: 10.00 (macro F1 0.9026)
+2026-04-24 17:49:02 | INFO    | 03_train_models | Training anomaly component on benign rows
+2026-04-24 17:49:02 | INFO    | 03_train_models | Subsampled benign training set to 80000 rows
+2026-04-24 17:49:02 | INFO    | 03_train_models |   anomaly nu=0.050 -> ROC-AUC 0.7973
+2026-04-24 17:49:02 | INFO    | 03_train_models |   anomaly nu=0.100 -> ROC-AUC 0.7205
+2026-04-24 17:49:02 | INFO    | 03_train_models |   anomaly nu=0.200 -> ROC-AUC 0.8713
+2026-04-24 17:49:02 | INFO    | 03_train_models | Best anomaly nu: 0.200 (ROC-AUC 0.8713)
+2026-04-24 17:49:02 | INFO    | 03_train_models | Training meta-learner on stacked features
+2026-04-24 17:49:03 | INFO    | 03_train_models |   meta C=0.10 -> macro F1 0.8995
+2026-04-24 17:49:03 | INFO    | 03_train_models |   meta C=1.00 -> macro F1 0.8989
+2026-04-24 17:49:03 | INFO    | 03_train_models |   meta C=10.00 -> macro F1 0.8981
+2026-04-24 17:49:03 | INFO    | 03_train_models | Best meta C: 0.10 (macro F1 0.8995)
+2026-04-24 17:49:03 | INFO    | 03_train_models | Saved hybrid.joblib
+2026-04-24 17:49:03 | INFO    | 03_train_models | Best hyperparameters: {'C_supervised': 10.0, 'nu_anomaly': 0.2, 'C_meta': 0.1}
+2026-04-24 17:49:03 | INFO    | 03_train_models | Wrote D:\Work\Geria_projects\IDS\implementation\code\results\training_summary.txt
