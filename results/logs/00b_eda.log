@@ -1,0 +1,11 @@
+2026-04-25 12:00:02 | INFO    | 00b_eda | Loading prepared parquet: D:\Work\Geria_projects\IDS\implementation\code\data\processed\prepared.parquet
+2026-04-25 12:00:02 | INFO    | 00b_eda | Loaded 446338 rows, 79 columns
+2026-04-25 12:00:02 | INFO    | 00b_eda | Plotting class distribution
+2026-04-25 12:00:03 | INFO    | 00b_eda | Plotting missing-value audit
+2026-04-25 12:00:03 | INFO    | 00b_eda | Plotting correlation heatmap
+2026-04-25 12:00:06 | INFO    | 00b_eda | Plotting top features by correlation
+2026-04-25 12:00:15 | INFO    | 00b_eda | Plotting per-class feature distributions
+2026-04-25 12:00:17 | INFO    | 00b_eda | Computing outlier summary
+2026-04-25 12:00:18 | INFO    | 00b_eda | Computing per-class feature statistics
+2026-04-25 12:00:21 | INFO    | 00b_eda | Wrote D:\Work\Geria_projects\IDS\implementation\code\results\eda\eda_summary.txt
+2026-04-25 12:00:21 | INFO    | 00b_eda | EDA artefacts written to D:\Work\Geria_projects\IDS\implementation\code\results\eda

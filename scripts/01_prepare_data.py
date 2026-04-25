@@ -44,6 +44,7 @@ def main():
         seed=cfg["seed"],
         logger=logger,
         dedup=cfg["data"]["drop_duplicates"],
+        min_category_samples=cfg["data"].get("min_category_samples", 0),
     )
 
     out_path = project_path(cfg, "processed_data_dir", "prepared.parquet")

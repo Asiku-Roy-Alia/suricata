@@ -156,6 +156,29 @@ def normalise_labels(df: pd.DataFrame, logger: logging.Logger) -> pd.DataFrame:
     return df
 
 
+def drop_rare_categories(
+    df: pd.DataFrame, min_samples: int, logger: logging.Logger
+) -> pd.DataFrame:
+    """Drop attack categories with fewer than min_samples rows.
+
+    Such categories are too rare for SMOTE to upsample meaningfully and
+    contaminate the test set with classes the model will never learn. The
+    notebook excludes Infiltration on these grounds.
+    """
+    counts = df["Category"].value_counts()
+    rare = counts[counts < min_samples].index.tolist()
+    rare = [c for c in rare if c != "BENIGN"]
+    if not rare:
+        return df
+    before = len(df)
+    df = df[~df["Category"].isin(rare)].reset_index(drop=True)
+    logger.info(
+        "Dropped %d rare categories (< %d samples): %s. Removed %d rows.",
+        len(rare), min_samples, rare, before - len(df),
+    )
+    return df
+
+
 def stratified_sample(
     df: pd.DataFrame, fraction: float, seed: int, logger: logging.Logger
 ) -> pd.DataFrame:
@@ -180,6 +203,7 @@ def prepare(
     seed: int,
     logger: logging.Logger,
     dedup: bool = True,
+    min_category_samples: int = 0,
 ) -> pd.DataFrame:
     """Run the full raw-to-clean pipeline and return the resulting dataframe."""
     files = discover_csv_files(raw_dir, file_glob)
@@ -197,6 +221,8 @@ def prepare(
     if dedup:
         df = drop_duplicates(df, logger)
     df = normalise_labels(df, logger)
+    if min_category_samples > 0:
+        df = drop_rare_categories(df, min_category_samples, logger)
     df = stratified_sample(df, fraction, seed, logger)
     return df
 

@@ -8,6 +8,8 @@ When you run it end to end you will obtain the following artefacts.
 
 The file `results/metrics_summary.csv` holds the headline binary metrics for the three trained models, namely the Linear SVC baseline, the Isolation Forest baseline and the hybrid stacked classifier. Reported metrics include macro F1, Matthews Correlation Coefficient, accuracy, precision, recall, false positive rate, ROC-AUC and expected calibration error. The file `results/per_category_recall.csv` breaks recall down by attack category, so rare classes like Infiltration and Web Attack are never hidden behind an aggregate.
 
+The directory `results/eda/` contains exploratory data analysis artefacts produced by `scripts/00b_eda.py`. This includes class distribution plots in linear and logarithmic scale, a missing value audit, a correlation heatmap of the most variable features, a ranking of features by absolute correlation with the attack label, per-class boxplots of the most discriminative features, an outlier summary CSV, and per-class feature statistics. These figures and tables are intended for direct inclusion in the EDA section of the dissertation.
+
 The directory `results/loaco/` contains the output of the Leave-One-Attack-Category-Out experiment. For each of the seven attack categories, the hybrid model is retrained with that category entirely removed from training and validation sets, and its ability to detect the held-out category at test time is recorded. This is the experiment that allows the dissertation to make defensible claims about novel attack detection.
 
 The directory `results/plots/` contains a reliability diagram for the hybrid model and precision recall curves for all three models. The file `results/final_report.md` consolidates everything into a single readable document.
@@ -73,7 +75,8 @@ If you prefer to run the steps manually, the pipeline is organised as follows.
 
 ```bash
 python scripts/01_prepare_data.py     # Load, clean, deduplicate, stratified sample
-python scripts/02_preprocess.py       # Scale, RFE, PCA, train/val/test split
+python scripts/00b_eda.py             # Exploratory data analysis: plots, tables, correlations
+python scripts/02_preprocess.py       # Scale, RFE, PCA, SMOTE balancing, train/val/test split
 python scripts/03_train_models.py     # Fit Linear SVC, Isolation Forest and the hybrid
 python scripts/04_evaluate.py         # Held-out test evaluation with per-category recall
 python scripts/05_loaco.py            # Leave-One-Attack-Category-Out experiment
@@ -121,6 +124,8 @@ hybrid-ids/
     metrics.py                   Macro F1, MCC, per-class recall, calibration
   scripts/
     00_smoke_test.py             End-to-end synthetic test
+    00_smoke_test.py             End-to-end synthetic test
+    00b_eda.py                   Exploratory data analysis with plots/tables
     01_prepare_data.py           Step 1
     02_preprocess.py             Step 2
     03_train_models.py           Step 3
@@ -135,6 +140,7 @@ hybrid-ids/
   artifacts/                     Serialised trained models
   results/
     logs/                        Per-script log files
+    eda/                         Exploratory data analysis (plots, tables)
     plots/                       Reliability, PR curves
     loaco/                       Novel attack experiment outputs
     final_report.md              Consolidated human-readable report
@@ -146,7 +152,7 @@ hybrid-ids/
 
 ## 12. Writing up the results
 
-When you draft the results chapter of the dissertation, the recommended structure is to lead with the standard held-out evaluation from Section 3 of the generated report, then devote a separate subsection to the LOACO experiment and frame it as the project's principal novel-attack evidence. Finish with the reliability diagram and the expected calibration error, which is the diagnostic that justifies the calibration choice for the One-Class SVM component. This structure directly addresses every methodological concern raised in the supervisor evaluation.
+When you draft the results chapter of the dissertation, the recommended structure is to begin with the EDA findings from Section 2 of the generated report, then present the standard held-out evaluation from Section 4, then devote a separate subsection to the LOACO experiment and frame it as the project's principal novel-attack evidence. Finish with the reliability diagram and the expected calibration error, which is the diagnostic that justifies the calibration choice for the One-Class SVM component. This structure directly addresses every methodological concern raised in the supervisor evaluation. The EDA section gives you the dataset characterisation that examiners expect: class imbalance, feature correlations, and per-class discriminability before any model is introduced.
 
 Cite the current peer-reviewed literature when comparing your numbers. The Talukder et al. 2024 stacked ensemble paper, the HAMC-ID paper from 2025 and the HIDIM paper are appropriate baselines for the standard evaluation. For the LOACO discussion, frame it as filling a gap that the cited literature does not address, because the cited papers evaluate under a conventional train test split and therefore do not measure novel attack detection.
 

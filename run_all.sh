@@ -15,6 +15,8 @@ $PYTHON scripts/00_smoke_test.py
 echo
 $PYTHON scripts/01_prepare_data.py
 echo
+$PYTHON scripts/00b_eda.py
+echo
 $PYTHON scripts/02_preprocess.py
 echo
 $PYTHON scripts/03_train_models.py

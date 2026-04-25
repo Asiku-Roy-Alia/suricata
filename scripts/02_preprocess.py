@@ -68,6 +68,51 @@ def main():
     Xte = feat_mod.transform(fp.pipeline, X_te).astype(np.float32)
     logger.info("Transformed shapes: train %s, val %s, test %s", Xtr.shape, Xval.shape, Xte.shape)
 
+    # ---- Class balancing on the TRAINING SET only ----
+    # Validation and test sets keep their natural distribution because they
+    # are used to estimate real-world performance. Balancing follows the
+    # notebook approach: cap each class at class_cap real samples, then
+    # use SMOTE to synthesise minority samples up to the cap.
+    if cfg["preprocessing"].get("enable_class_balancing", False):
+        from collections import Counter
+        cap = int(cfg["preprocessing"]["class_cap"])
+        logger.info("Balancing training set (cap=%d, then SMOTE to equalise)", cap)
+
+        # Step 1: cap each class at `cap` real samples
+        rng = np.random.default_rng(cfg["seed"])
+        keep_indices = []
+        for cat in np.unique(yc_tr):
+            cat_idx = np.where(yc_tr == cat)[0]
+            if len(cat_idx) > cap:
+                chosen = rng.choice(cat_idx, size=cap, replace=False)
+            else:
+                chosen = cat_idx
+            keep_indices.extend(chosen.tolist())
+        keep_indices = np.array(sorted(keep_indices))
+        Xtr_capped = Xtr[keep_indices]
+        yb_tr_capped = yb_tr[keep_indices]
+        yc_tr_capped = yc_tr[keep_indices]
+        logger.info("After capping: %d rows, distribution: %s",
+                    len(Xtr_capped), dict(Counter(yc_tr_capped)))
+
+        # Step 2: SMOTE on the capped set, using the multi-class label so
+        # SMOTE can target each minority category. The k_neighbours parameter
+        # automatically adjusts down for very small classes.
+        try:
+            from imblearn.over_sampling import SMOTE
+            min_class_count = min(Counter(yc_tr_capped).values())
+            k = max(1, min(5, min_class_count - 1))
+            smote = SMOTE(random_state=cfg["seed"], k_neighbors=k)
+            Xtr_bal, yc_tr_bal = smote.fit_resample(Xtr_capped, yc_tr_capped)
+            yb_tr_bal = (yc_tr_bal != "BENIGN").astype(np.int8)
+            logger.info("After SMOTE: %d rows, distribution: %s",
+                        len(Xtr_bal), dict(Counter(yc_tr_bal)))
+            Xtr, yb_tr, yc_tr = Xtr_bal.astype(np.float32), yb_tr_bal, yc_tr_bal
+        except ImportError:
+            logger.warning("imbalanced-learn not installed, skipping SMOTE. "
+                           "Install with: pip install imbalanced-learn")
+            Xtr, yb_tr, yc_tr = Xtr_capped, yb_tr_capped, yc_tr_capped
+
     splits_path = project_path(cfg, "processed_data_dir", "splits.npz")
     np.savez_compressed(
         splits_path,

@@ -1,8 +1,8 @@
 Training summary
 ================
 
-Train size:      312641
-Val size:        44664
-Test size:       89327
+Train size:      30000
+Val size:        44634
+Test size:       89268
 
-Hybrid best params: {'C_supervised': 10.0, 'nu_anomaly': 0.2, 'C_meta': 0.1}
+Hybrid best params: {'supervised_type': 'RandomForest', 'n_estimators': 400, 'max_depth': 40, 'nu_anomaly': 0.2, 'C_meta': 1.0}

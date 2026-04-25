@@ -1,19 +1,19 @@
-2026-04-24 17:20:45 | INFO    | 01_prepare_data | Reading raw CSVs from D:\Work\Geria_projects\IDS\implementation\code\data\raw
-2026-04-24 17:20:45 | INFO    | 01_prepare_data | Discovered 8 raw CSV files
-2026-04-24 17:20:45 | INFO    | 01_prepare_data | Reading (1/8) Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv
-2026-04-24 17:20:47 | INFO    | 01_prepare_data | Reading (2/8) Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv
-2026-04-24 17:20:50 | INFO    | 01_prepare_data | Reading (3/8) Friday-WorkingHours-Morning.pcap_ISCX.csv
-2026-04-24 17:20:52 | INFO    | 01_prepare_data | Reading (4/8) Monday-WorkingHours.pcap_ISCX.csv
-2026-04-24 17:20:59 | INFO    | 01_prepare_data | Reading (5/8) Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv
-2026-04-24 17:21:02 | INFO    | 01_prepare_data | Reading (6/8) Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv
-2026-04-24 17:21:04 | INFO    | 01_prepare_data | Reading (7/8) Tuesday-WorkingHours.pcap_ISCX.csv
-2026-04-24 17:21:09 | INFO    | 01_prepare_data | Reading (8/8) Wednesday-workingHours.pcap_ISCX.csv
-2026-04-24 17:21:19 | INFO    | 01_prepare_data | Concatenated rows: 2830743, columns: 79
-2026-04-24 17:21:19 | INFO    | 01_prepare_data | Dropping identifier columns: ['Destination Port']
-2026-04-24 17:21:24 | INFO    | 01_prepare_data | Replacing 4376 infinity values with NaN
-2026-04-24 17:21:38 | INFO    | 01_prepare_data | Dropped 2867 rows with missing values
-2026-04-24 17:21:56 | INFO    | 01_prepare_data | Dropped 594712 duplicate rows
-2026-04-24 17:21:57 | INFO    | 01_prepare_data | Category distribution:
+2026-04-25 11:58:40 | INFO    | 01_prepare_data | Reading raw CSVs from D:\Work\Geria_projects\IDS\implementation\code\data\raw
+2026-04-25 11:58:40 | INFO    | 01_prepare_data | Discovered 8 raw CSV files
+2026-04-25 11:58:40 | INFO    | 01_prepare_data | Reading (1/8) Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv
+2026-04-25 11:58:42 | INFO    | 01_prepare_data | Reading (2/8) Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv
+2026-04-25 11:58:45 | INFO    | 01_prepare_data | Reading (3/8) Friday-WorkingHours-Morning.pcap_ISCX.csv
+2026-04-25 11:58:46 | INFO    | 01_prepare_data | Reading (4/8) Monday-WorkingHours.pcap_ISCX.csv
+2026-04-25 11:58:51 | INFO    | 01_prepare_data | Reading (5/8) Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv
+2026-04-25 11:58:54 | INFO    | 01_prepare_data | Reading (6/8) Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv
+2026-04-25 11:58:56 | INFO    | 01_prepare_data | Reading (7/8) Tuesday-WorkingHours.pcap_ISCX.csv
+2026-04-25 11:59:00 | INFO    | 01_prepare_data | Reading (8/8) Wednesday-workingHours.pcap_ISCX.csv
+2026-04-25 11:59:08 | INFO    | 01_prepare_data | Concatenated rows: 2830743, columns: 79
+2026-04-25 11:59:08 | INFO    | 01_prepare_data | Dropping identifier columns: ['Destination Port']
+2026-04-25 11:59:12 | INFO    | 01_prepare_data | Replacing 4376 infinity values with NaN
+2026-04-25 11:59:35 | INFO    | 01_prepare_data | Dropped 2867 rows with missing values
+2026-04-25 11:59:51 | INFO    | 01_prepare_data | Dropped 594712 duplicate rows
+2026-04-25 11:59:52 | INFO    | 01_prepare_data | Category distribution:
 Category
 BENIGN          1896672
 DoS              193756
@@ -23,16 +23,15 @@ Web Attack         2143
 PortScan           1956
 Bot                1437
 Infiltration         36
-2026-04-24 17:21:59 | INFO    | 01_prepare_data | Stratified sample: 446632 rows kept
-2026-04-24 17:21:59 | INFO    | 01_prepare_data | Post-sample category distribution:
+2026-04-25 11:59:53 | INFO    | 01_prepare_data | Dropped 2 rare categories (< 1500 samples): ['Bot', 'Infiltration']. Removed 1473 rows.
+2026-04-25 11:59:56 | INFO    | 01_prepare_data | Stratified sample: 446338 rows kept
+2026-04-25 11:59:56 | INFO    | 01_prepare_data | Post-sample category distribution:
 Category
-BENIGN          379334
-DoS              38751
-DDoS             25603
-Brute Force       1830
-Web Attack         429
-PortScan           391
-Bot                287
-Infiltration         7
-2026-04-24 17:22:02 | INFO    | 01_prepare_data | Wrote D:\Work\Geria_projects\IDS\implementation\code\data\processed\prepared.parquet (446632 rows, 79 columns)
-2026-04-24 17:22:02 | INFO    | 01_prepare_data | Wrote summary: D:\Work\Geria_projects\IDS\implementation\code\data\processed\prepared_summary.txt
+BENIGN         379334
+DoS             38751
+DDoS            25603
+Brute Force      1830
+Web Attack        429
+PortScan          391
+2026-04-25 11:59:58 | INFO    | 01_prepare_data | Wrote D:\Work\Geria_projects\IDS\implementation\code\data\processed\prepared.parquet (446338 rows, 79 columns)
+2026-04-25 11:59:58 | INFO    | 01_prepare_data | Wrote summary: D:\Work\Geria_projects\IDS\implementation\code\data\processed\prepared_summary.txt

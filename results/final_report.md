@@ -1,24 +1,22 @@
 # Hybrid IDS: Final Results Report
 
-_Generated 2026-04-24 17:55:50_
+_Generated 2026-04-25 12:14:18_
 
 
 ## 1. Dataset Preparation
 
 ```
-rows: 446632
+rows: 446338
 columns: 79
 
 Category distribution:
 Category
-BENIGN          379334
-DoS              38751
-DDoS             25603
-Brute Force       1830
-Web Attack         429
-PortScan           391
-Bot                287
-Infiltration         7
+BENIGN         379334
+DoS             38751
+DDoS            25603
+Brute Force      1830
+Web Attack        429
+PortScan          391
 
 Column list:
 Flow Duration
@@ -103,13 +101,61 @@ Category
 ```
 
 
-## 2. Feature Pipeline
+## 2. Exploratory Data Analysis
+
+```
+Exploratory Data Analysis Summary
+==================================================
+
+Total rows:       446,338
+Total columns:    79
+Attack ratio:     0.1501
+
+Category counts:
+  BENIGN             379,334  (84.99%)
+  DoS                 38,751  ( 8.68%)
+  DDoS                25,603  ( 5.74%)
+  Brute Force          1,830  ( 0.41%)
+  Web Attack             429  ( 0.10%)
+  PortScan               391  ( 0.09%)
+
+Top 15 features by absolute correlation with attack label:
+  Bwd Packet Length Std                +0.7134
+  Bwd Packet Length Mean               +0.7039
+  Avg Bwd Segment Size                 +0.7039
+  Bwd Packet Length Max                +0.7009
+  Packet Length Std                    +0.6770
+  Max Packet Length                    +0.6565
+  Average Packet Size                  +0.6334
+  Packet Length Mean                   +0.6291
+  Packet Length Variance               +0.6186
+  Fwd IAT Std                          +0.5912
+  Idle Max                             +0.5593
+  Flow IAT Max                         +0.5564
+  Fwd IAT Max                          +0.5549
+  Idle Mean                            +0.5534
+  Idle Min                             +0.5381
+
+```
+
+
+EDA artefacts written to `results/eda/`:
+
+- **Class distribution (linear scale)**: `results/eda/01_class_distribution.png`
+- **Class distribution (log scale, exposes minority classes)**: `results/eda/02_class_distribution_log.png`
+- **Missing-value audit**: `results/eda/03_missing_values.png`
+- **Correlation matrix of top-30 features by variance**: `results/eda/04_correlation_heatmap.png`
+- **Top 15 features by correlation with attack label**: `results/eda/05_top_features_by_correlation.png`
+- **Per-class boxplots of the most discriminative features**: `results/eda/06_feature_distributions.png`
+
+
+## 3. Feature Pipeline
 
 ```
 Input features: 77
 RFE retained:   30
-PCA components: 11
-PCA variance retained: 0.9612
+PCA components: 10
+PCA variance retained: 0.9509
 
 RFE-selected features:
 Flow Duration
@@ -119,6 +165,7 @@ Fwd Packet Length Max
 Fwd Packet Length Std
 Bwd Packet Length Max
 Bwd Packet Length Min
+Bwd Packet Length Mean
 Flow IAT Std
 Flow IAT Max
 Flow IAT Min
@@ -129,14 +176,13 @@ Fwd IAT Max
 Fwd IAT Min
 Bwd Packets/s
 Max Packet Length
-Packet Length Mean
 Packet Length Variance
 Average Packet Size
+Avg Bwd Segment Size
 Subflow Fwd Packets
 Subflow Bwd Bytes
 act_data_pkt_fwd
 Active Mean
-Active Std
 Active Max
 Idle Mean
 Idle Std
@@ -145,86 +191,82 @@ Idle Min
 ```
 
 
-## 3. Standard Held-Out Evaluation
+## 4. Standard Held-Out Evaluation
 
-### 3.1 Headline metrics
+### 4.1 Headline metrics
 
-| model           |   macro_f1 |    mcc |   accuracy |   precision |   recall |   false_positive_rate |   false_negative_rate |   roc_auc |    ece |   tp |   fp |    tn |   fn |
-|:----------------|-----------:|-------:|-----------:|------------:|---------:|----------------------:|----------------------:|----------:|-------:|-----:|-----:|------:|-----:|
-| LinearSVC       |     0.9013 | 0.8134 |     0.9546 |      0.9607 |   0.7287 |                0.0053 |                0.2713 |    0.962  | 0.0255 | 9808 |  401 | 75466 | 3652 |
-| IsolationForest |     0.7737 | 0.5482 |     0.8798 |      0.5924 |   0.6474 |                0.079  |                0.3526 |    0.8158 | 0.0852 | 8714 | 5995 | 69872 | 4746 |
-| HybridStack     |     0.901  | 0.8122 |     0.9544 |      0.9566 |   0.7303 |                0.0059 |                0.2697 |    0.962  | 0.0085 | 9830 |  446 | 75421 | 3630 |
-
-
-### 3.2 Per-category recall
-
-| category     |   HybridStack |   IsolationForest |   LinearSVC |
-|:-------------|--------------:|------------------:|------------:|
-| BENIGN       |        0.9941 |            0.921  |      0.9947 |
-| Bot          |        0      |            0.0345 |      0      |
-| Brute Force  |        0      |            0      |      0      |
-| DDoS         |        0.635  |            0.5118 |      0.635  |
-| DoS          |        0.8486 |            0.7849 |      0.8458 |
-| Infiltration |        0      |            1      |      0      |
-| PortScan     |        0.0128 |            0.0897 |      0.0128 |
-| Web Attack   |        0      |            0      |      0      |
+| model           |   macro_f1 |    mcc |   accuracy |   precision |   recall |   false_positive_rate |   false_negative_rate |   roc_auc |    ece |    tp |    fp |    tn |   fn |
+|:----------------|-----------:|-------:|-----------:|------------:|---------:|----------------------:|----------------------:|----------:|-------:|------:|------:|------:|-----:|
+| LinearSVC       |     0.4904 | 0.3076 |     0.5151 |      0.2343 |   0.9834 |                0.5677 |                0.0166 |    0.9338 | 0.4644 | 13179 | 43067 | 32800 |  222 |
+| IsolationForest |     0.8005 | 0.6043 |     0.891  |      0.6167 |   0.7242 |                0.0795 |                0.2758 |    0.8397 | 0.0959 |  9705 |  6031 | 69836 | 3696 |
+| HybridStack     |     0.9707 | 0.9422 |     0.9846 |      0.9197 |   0.9835 |                0.0152 |                0.0165 |    0.9981 | 0.0136 | 13180 |  1150 | 74717 |  221 |
 
 
-### 3.3 Confusion matrices
+### 4.2 Per-category recall
+
+| category    |   HybridStack |   IsolationForest |   LinearSVC |
+|:------------|--------------:|------------------:|------------:|
+| BENIGN      |        0.9848 |            0.9205 |      0.4323 |
+| Brute Force |        0.9836 |            0      |      1      |
+| DDoS        |        0.9986 |            0.6132 |      0.9996 |
+| DoS         |        0.9743 |            0.8454 |      0.9721 |
+| PortScan    |        0.9615 |            0.1667 |      1      |
+| Web Attack  |        0.9302 |            0      |      0.9535 |
+
+
+### 4.3 Confusion matrices
 
 ```
 
 LinearSVC
                 pred_BENIGN  pred_ATTACK
-true_BENIGN            75466         401
-true_ATTACK             3652        9808
+true_BENIGN            32800       43067
+true_ATTACK              222       13179
 
 IsolationForest
                 pred_BENIGN  pred_ATTACK
-true_BENIGN            69872        5995
-true_ATTACK             4746        8714
+true_BENIGN            69836        6031
+true_ATTACK             3696        9705
 
 HybridStack
                 pred_BENIGN  pred_ATTACK
-true_BENIGN            75421         446
-true_ATTACK             3630        9830
+true_BENIGN            74717        1150
+true_ATTACK              221       13180
 
 ```
 
 
-## 4. Leave-One-Attack-Category-Out (LOACO)
+## 5. Leave-One-Attack-Category-Out (LOACO)
 
 Each row below represents a full retraining run in which the named attack category was removed from the training set entirely. The *novel_recall* column measures the model's ability to detect that category at test time without ever having seen it during training.
 
 | held_out_category   |   novel_recall |   known_attack_recall |   true_negative_rate |   overall_macro_f1 |   overall_mcc |   overall_fpr |
 |:--------------------|---------------:|----------------------:|---------------------:|-------------------:|--------------:|--------------:|
-| DoS                 |         0.7782 |                0.5636 |               0.9944 |             0.8849 |        0.7846 |        0.0056 |
-| DDoS                |         0.635  |                0.788  |               0.9951 |             0.9024 |        0.8157 |        0.0049 |
-| PortScan            |         0.0128 |                0.7336 |               0.9941 |             0.9007 |        0.8117 |        0.0059 |
-| Brute Force         |         0      |                0.7541 |               0.9935 |             0.9012 |        0.8121 |        0.0065 |
-| Web Attack          |         0      |                0.7345 |               0.9943 |             0.901  |        0.8125 |        0.0057 |
-| Infiltration        |         0      |                0.7304 |               0.9942 |             0.901  |        0.8124 |        0.0058 |
-| Bot                 |         0      |                0.7283 |               0.9933 |             0.8978 |        0.8058 |        0.0067 |
+| DoS                 |         0.0898 |                0.9901 |               0.9918 |             0.7853 |        0.6164 |        0.0082 |
+| DDoS                |         0.5001 |                0.9687 |               0.9873 |             0.9119 |        0.8271 |        0.0127 |
+| PortScan            |         0.1026 |                0.9784 |               0.9876 |             0.9719 |        0.9442 |        0.0124 |
+| Brute Force         |         0.0109 |                0.9786 |               0.988  |             0.9662 |        0.9324 |        0.012  |
+| Web Attack          |         0.0233 |                0.9797 |               0.9887 |             0.9738 |        0.9478 |        0.0113 |
 
 
-**Average novel-category recall:** 0.2037  
+**Average novel-category recall:** 0.1453  
 
-**Average recall on remaining known attacks:** 0.7189  
+**Average recall on remaining known attacks:** 0.9791  
 
-**Detection gap (known minus novel):** 0.5152
+**Detection gap (known minus novel):** 0.8338
 
 
-## 5. Plots
+## 6. Plots
 
 - **Reliability diagram (hybrid)**: `results\plots\reliability_hybrid.png`
 - **Precision-recall curves**: `results\plots\pr_curves.png`
 - **LOACO bar chart**: `results\loaco\loaco_plot.png`
 
 
-## 6. Interpretation Notes
+## 7. Interpretation Notes
 
 
-The standard held-out evaluation in Section 3 reports what the literature
+The standard held-out evaluation in Section 4 reports what the literature
 typically calls benchmark performance. Numbers in that section should be
 compared to the 2024 to 2025 peer-reviewed literature on CIC-IDS-2017, where
 macro F1 above 0.95 is now routinely achieved by stacked ensembles.
@@ -235,7 +277,7 @@ attacks, it is memorising attack signatures present in the training set. The
 gap between known-attack recall and novel-category recall is the quantity to
 discuss in the dissertation.
 
-The reliability diagram in Section 5 shows whether the hybrid model's
+The reliability diagram in Section 6 shows whether the hybrid model's
 probability outputs are trustworthy. A curve close to the diagonal indicates
 that a predicted probability of 0.8 for an attack is empirically associated
 with roughly 80% attack occurrence in that bin. Poor calibration undermines

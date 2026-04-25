@@ -1,8 +1,8 @@
-2026-04-24 17:18:31 | INFO    | 00_smoke_test | ======================================================================
-2026-04-24 17:18:31 | INFO    | 00_smoke_test | SMOKE TEST
-2026-04-24 17:18:31 | INFO    | 00_smoke_test | ======================================================================
-2026-04-24 17:18:31 | INFO    | 00_smoke_test | Synthetic dataset shape: (12600, 41)
-2026-04-24 17:18:31 | INFO    | 00_smoke_test | Category distribution:
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | ======================================================================
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | SMOKE TEST
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | ======================================================================
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | Synthetic dataset shape: (12600, 41)
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | Category distribution:
 Category
 BENIGN         8000
 DoS            1500
@@ -11,43 +11,41 @@ PortScan       1000
 Brute Force     400
 Web Attack      300
 Bot             200
-2026-04-24 17:18:31 | INFO    | 00_smoke_test | Split sizes: train=8820 val=1260 test=2520
-2026-04-24 17:18:31 | INFO    | 00_smoke_test | Fitting feature pipeline (8820 rows, 40 input features, RFE keeps 20, PCA var 0.95)
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | RFE retained 20 features
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | PCA produced 17 components (var retained: 0.9522)
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | ----------------------------------------------------------------------
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | BASELINES
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | ----------------------------------------------------------------------
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | Fitting Linear SVC baseline
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | LinearSVC                 macroF1=0.9991  MCC=0.9983  acc=0.9992  prec=0.9989  rec=0.9989  FPR=0.0006  ROC-AUC=1.0000
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | Fitting Isolation Forest baseline on benign rows only
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | IsolationForest           macroF1=0.9460  MCC=0.8938  acc=0.9508  prec=0.9682  rec=0.8946  FPR=0.0169  ROC-AUC=0.9912
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | ----------------------------------------------------------------------
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | HYBRID STACKED MODEL
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | ----------------------------------------------------------------------
-2026-04-24 17:18:32 | INFO    | 00_smoke_test | Training supervised component
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   supervised C=0.10 -> macro F1 0.9995
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   supervised C=1.00 -> macro F1 0.9995
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   supervised C=10.00 -> macro F1 0.9995
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | Best supervised C: 0.10 (macro F1 0.9995)
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | Training anomaly component on benign rows
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   anomaly nu=0.050 -> ROC-AUC 1.0000
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   anomaly nu=0.100 -> ROC-AUC 1.0000
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   anomaly nu=0.200 -> ROC-AUC 1.0000
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | Best anomaly nu: 0.100 (ROC-AUC 1.0000)
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | Training meta-learner on stacked features
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   meta C=0.10 -> macro F1 1.0000
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   meta C=1.00 -> macro F1 1.0000
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   meta C=10.00 -> macro F1 1.0000
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | Best meta C: 0.10 (macro F1 1.0000)
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | Hybrid                    macroF1=0.9991  MCC=0.9983  acc=0.9992  prec=0.9989  rec=0.9989  FPR=0.0006  ROC-AUC=1.0000
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | Per-category recall (hybrid): {'BENIGN': 0.999375, 'Bot': 1.0, 'Brute Force': 1.0, 'DDoS': 1.0, 'DoS': 0.9966666666666667, 'PortScan': 1.0, 'Web Attack': 1.0}
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | Hybrid Expected Calibration Error: 0.0481
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | ======================================================================
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | THRESHOLD CHECKS
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | ======================================================================
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   [PASS] LinearSVC macro F1 > 0.85
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   [PASS] Hybrid macro F1 > 0.90
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   [PASS] Hybrid FPR < 0.05
-2026-04-24 17:18:33 | INFO    | 00_smoke_test |   [PASS] Hybrid ECE < 0.10
-2026-04-24 17:18:33 | INFO    | 00_smoke_test | SMOKE TEST PASSED. Environment is ready for CIC-IDS-2017.
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | Split sizes: train=8820 val=1260 test=2520
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | Fitting feature pipeline (8820 rows, 40 input features, RFE keeps 20, PCA var 0.95)
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | RFE retained 20 features
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | PCA produced 17 components (var retained: 0.9522)
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | ----------------------------------------------------------------------
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | BASELINES
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | ----------------------------------------------------------------------
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | Fitting Linear SVC baseline
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | LinearSVC                 macroF1=0.9991  MCC=0.9983  acc=0.9992  prec=0.9989  rec=0.9989  FPR=0.0006  ROC-AUC=1.0000
+2026-04-25 11:58:30 | INFO    | 00_smoke_test | Fitting Isolation Forest baseline on benign rows only
+2026-04-25 11:58:31 | INFO    | 00_smoke_test | IsolationForest           macroF1=0.9460  MCC=0.8938  acc=0.9508  prec=0.9682  rec=0.8946  FPR=0.0169  ROC-AUC=0.9912
+2026-04-25 11:58:31 | INFO    | 00_smoke_test | ----------------------------------------------------------------------
+2026-04-25 11:58:31 | INFO    | 00_smoke_test | HYBRID STACKED MODEL
+2026-04-25 11:58:31 | INFO    | 00_smoke_test | ----------------------------------------------------------------------
+2026-04-25 11:58:31 | INFO    | 00_smoke_test | Training supervised component
+2026-04-25 11:58:31 | INFO    | 00_smoke_test | Training Random Forest (n_estimators=400, max_depth=40)
+2026-04-25 11:58:38 | INFO    | 00_smoke_test |   RF macro-F1 (3-fold CV on 8820-row subsample): 0.9994
+2026-04-25 11:58:38 | INFO    | 00_smoke_test | Training anomaly component on benign rows only
+2026-04-25 11:58:38 | INFO    | 00_smoke_test |   anomaly nu=0.050 -> ROC-AUC 1.0000
+2026-04-25 11:58:38 | INFO    | 00_smoke_test |   anomaly nu=0.100 -> ROC-AUC 1.0000
+2026-04-25 11:58:38 | INFO    | 00_smoke_test |   anomaly nu=0.200 -> ROC-AUC 1.0000
+2026-04-25 11:58:38 | INFO    | 00_smoke_test | Best anomaly nu: 0.100 (ROC-AUC 1.0000)
+2026-04-25 11:58:38 | INFO    | 00_smoke_test | Training meta-learner on stacked validation features
+2026-04-25 11:58:38 | INFO    | 00_smoke_test |   meta C=0.10 -> macro F1 1.0000
+2026-04-25 11:58:38 | INFO    | 00_smoke_test |   meta C=1.00 -> macro F1 1.0000
+2026-04-25 11:58:38 | INFO    | 00_smoke_test |   meta C=10.00 -> macro F1 1.0000
+2026-04-25 11:58:38 | INFO    | 00_smoke_test | Best meta C: 0.10 (macro F1 1.0000)
+2026-04-25 11:58:39 | INFO    | 00_smoke_test | Hybrid                    macroF1=0.9991  MCC=0.9983  acc=0.9992  prec=0.9978  rec=1.0000  FPR=0.0013  ROC-AUC=1.0000
+2026-04-25 11:58:39 | INFO    | 00_smoke_test | Per-category recall (hybrid): {'BENIGN': 0.99875, 'Bot': 1.0, 'Brute Force': 1.0, 'DDoS': 1.0, 'DoS': 1.0, 'PortScan': 1.0, 'Web Attack': 1.0}
+2026-04-25 11:58:39 | INFO    | 00_smoke_test | Hybrid Expected Calibration Error: 0.0481
+2026-04-25 11:58:39 | INFO    | 00_smoke_test | ======================================================================
+2026-04-25 11:58:39 | INFO    | 00_smoke_test | THRESHOLD CHECKS
+2026-04-25 11:58:39 | INFO    | 00_smoke_test | ======================================================================
+2026-04-25 11:58:39 | INFO    | 00_smoke_test |   [PASS] LinearSVC macro F1 > 0.85
+2026-04-25 11:58:39 | INFO    | 00_smoke_test |   [PASS] Hybrid macro F1 > 0.90
+2026-04-25 11:58:39 | INFO    | 00_smoke_test |   [PASS] Hybrid FPR < 0.05
+2026-04-25 11:58:39 | INFO    | 00_smoke_test |   [PASS] Hybrid ECE < 0.10
+2026-04-25 11:58:39 | INFO    | 00_smoke_test | SMOKE TEST PASSED. Environment is ready for CIC-IDS-2017.

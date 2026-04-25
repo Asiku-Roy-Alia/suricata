@@ -42,26 +42,44 @@ def main():
     lines.append("\n## 1. Dataset Preparation\n")
     lines.append("```\n" + read_if_exists(project_path(cfg, "processed_data_dir", "prepared_summary.txt")) + "\n```\n")
 
-    lines.append("\n## 2. Feature Pipeline\n")
+    lines.append("\n## 2. Exploratory Data Analysis\n")
+    eda_dir = project_path(cfg, "results_dir", "eda")
+    eda_summary = eda_dir / "eda_summary.txt"
+    if eda_summary.exists():
+        lines.append("```\n" + read_if_exists(eda_summary) + "\n```\n")
+        lines.append("\nEDA artefacts written to `results/eda/`:\n")
+        for plot_name, description in [
+            ("01_class_distribution.png", "Class distribution (linear scale)"),
+            ("02_class_distribution_log.png", "Class distribution (log scale, exposes minority classes)"),
+            ("03_missing_values.png", "Missing-value audit"),
+            ("04_correlation_heatmap.png", "Correlation matrix of top-30 features by variance"),
+            ("05_top_features_by_correlation.png", "Top 15 features by correlation with attack label"),
+            ("06_feature_distributions.png", "Per-class boxplots of the most discriminative features"),
+        ]:
+            if (eda_dir / plot_name).exists():
+                lines.append(f"- **{description}**: `results/eda/{plot_name}`")
+        lines.append("")
+
+    lines.append("\n## 3. Feature Pipeline\n")
     lines.append("```\n" + read_if_exists(project_path(cfg, "processed_data_dir", "feature_info.txt")) + "\n```\n")
 
-    lines.append("\n## 3. Standard Held-Out Evaluation\n")
+    lines.append("\n## 4. Standard Held-Out Evaluation\n")
     metrics_csv = results / "metrics_summary.csv"
     if metrics_csv.exists():
         df = pd.read_csv(metrics_csv)
-        lines.append("### 3.1 Headline metrics\n")
+        lines.append("### 4.1 Headline metrics\n")
         lines.append(df.round(4).to_markdown(index=False) + "\n")
 
     per_cat_csv = results / "per_category_recall.csv"
     if per_cat_csv.exists():
         df = pd.read_csv(per_cat_csv, index_col=0)
-        lines.append("\n### 3.2 Per-category recall\n")
+        lines.append("\n### 4.2 Per-category recall\n")
         lines.append(df.round(4).to_markdown() + "\n")
 
-    lines.append("\n### 3.3 Confusion matrices\n")
+    lines.append("\n### 4.3 Confusion matrices\n")
     lines.append("```\n" + read_if_exists(results / "confusion_matrices.txt") + "\n```\n")
 
-    lines.append("\n## 4. Leave-One-Attack-Category-Out (LOACO)\n")
+    lines.append("\n## 5. Leave-One-Attack-Category-Out (LOACO)\n")
     loaco_csv = loaco / "loaco_results.csv"
     if loaco_csv.exists():
         df = pd.read_csv(loaco_csv)
@@ -78,7 +96,7 @@ def main():
     else:
         lines.append("(LOACO results not produced yet)\n")
 
-    lines.append("\n## 5. Plots\n")
+    lines.append("\n## 6. Plots\n")
     plot_entries = [
         ("Reliability diagram (hybrid)", project_path(cfg, "plots_dir", "reliability_hybrid.png")),
         ("Precision-recall curves", project_path(cfg, "plots_dir", "pr_curves.png")),
@@ -90,9 +108,9 @@ def main():
             lines.append(f"- **{name}**: `{rel}`")
     lines.append("")
 
-    lines.append("\n## 6. Interpretation Notes\n")
+    lines.append("\n## 7. Interpretation Notes\n")
     lines.append("""
-The standard held-out evaluation in Section 3 reports what the literature
+The standard held-out evaluation in Section 4 reports what the literature
 typically calls benchmark performance. Numbers in that section should be
 compared to the 2024 to 2025 peer-reviewed literature on CIC-IDS-2017, where
 macro F1 above 0.95 is now routinely achieved by stacked ensembles.
@@ -103,7 +121,7 @@ attacks, it is memorising attack signatures present in the training set. The
 gap between known-attack recall and novel-category recall is the quantity to
 discuss in the dissertation.
 
-The reliability diagram in Section 5 shows whether the hybrid model's
+The reliability diagram in Section 6 shows whether the hybrid model's
 probability outputs are trustworthy. A curve close to the diagonal indicates
 that a predicted probability of 0.8 for an attack is empirically associated
 with roughly 80% attack occurrence in that bin. Poor calibration undermines
